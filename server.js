@@ -5,6 +5,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 const MOVIES = require('./movies-data-small.json')
 
+console.log(process.env.API_TOKEN)
+
 const app = express()
 
 app.use(cors())
@@ -24,8 +26,14 @@ app.get('/movie', function handleGetMovies(req, res) {
     let response = MOVIES;
 
     if(req.query.genre) {
-        respons = response.filter(movie =>
-            movie.country.toLowerCast().includes(req.query.country.toLowerCase())
+        response = response.filter(movie =>
+            movie.genre.toLowerCase().includes(req.query.genre.toLowerCase())
+        )
+    }
+
+    if (req.query.country) {
+        response = response.filter(movie =>
+          movie.country.toLowerCase().includes(req.query.country.toLowerCase())
         )
     }
 
