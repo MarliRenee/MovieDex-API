@@ -5,7 +5,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 const MOVIES = require('./movies-data-small.json')
 
-//console.log(process.env.API_TOKEN)
+console.log(process.env.API_TOKEN)
+const PORT = process.env.PORT || 8000
 
 const app = express()
 
@@ -17,14 +18,16 @@ app.use(helmet())
 app.use(function validateBearerToken(req, res, next) {
     const apiToken = process.env.API_TOKEN
     var authToken = req.get('Authorization')
+    console.log(authToken)
+    console.log(authToken.split(' ')[1])
     if (!authToken || authToken.split(' ')[1] !== apiToken) {
         return res.status(401).json({ error: 'Unauthorized request' })
     }
     next()
 })
 
-
 app.get('/movie', function handleGetMovies(req, res) {
+    console.log(req.get('Authorization'))
     let response = MOVIES;
 
     if(req.query.genre) {
@@ -57,11 +60,8 @@ app.use((error, req, res, next) => {
       response = { error }
     }
     res.status(500).json(response)
-  })
+})
   
-
-const PORT = process.env.PORT || 8000
-
-// app.listen(PORT, () => {
-//   console.log(`Server listening at http://localhost:${PORT}`)
-// })
+app.listen(PORT, () => {
+  console.log(`Server listening at http://localhost:${PORT}`)
+})
